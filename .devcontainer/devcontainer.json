@@ -1,0 +1,9 @@
+{
+    "name": "api",
+    "dockerComposeFile": "../docker-compose-dev.yml",
+    "service": "dev-nest-faker-api",
+    "workspaceFolder": "/root/repo/",
+    "shutdownAction": "stopCompose",
+    "initializeCommand": "mkdir -p db/files/dev/data/",
+    "postCreateCommand": "cd api && npm install"
+}

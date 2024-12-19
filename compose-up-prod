@@ -1,0 +1,3 @@
+#!/bin/bash
+mkdir -p db/files/prod/data/
+docker compose -f docker-compose-prod.yml -p prod-nest-faker-service up -d

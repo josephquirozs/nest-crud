@@ -1,0 +1,43 @@
+version: "3.7"
+services:
+  nest-faker-api:
+    container_name: nest-faker-api
+    image: nest-faker-api-image:${VERSION}
+    pull_policy: never
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    ports:
+      - "49301:3000"
+    environment:
+      - "TZ=UTC"
+    depends_on:
+      - nest-faker-db
+    restart: always
+
+  nest-faker-db:
+    container_name: nest-faker-db
+    image: postgres:14.7-alpine
+    ports:
+      - "49302:5432"
+    environment:
+      - "TZ=UTC"
+      - "PGTZ=UTC"
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=prod123
+    volumes:
+      - ./db/files/prod/data/:/var/lib/postgresql/data/
+      - ./db/scripts/init-prod-db.sql:/docker-entrypoint-initdb.d/init-prod-db.sql:ro
+    restart: always
+
+  nest-faker-pgadmin:
+    container_name: nest-faker-pgadmin
+    image: dpage/pgadmin4:7.1
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "postgres@prod.lo"
+      PGADMIN_DEFAULT_PASSWORD: "prod123"
+    ports:
+      - "49303:80"
+    depends_on:
+      - nest-faker-db
+    restart: always

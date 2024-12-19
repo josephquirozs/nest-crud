@@ -1,0 +1,10 @@
+FROM node:18.16.0-alpine
+WORKDIR /app/
+RUN apk upgrade \
+    && apk add tzdata \
+    && npm install -g @nestjs/cli
+COPY . .
+WORKDIR /app/api/
+RUN npm install \
+    && npm run build
+ENTRYPOINT ["npm", "run", "start:prod"]

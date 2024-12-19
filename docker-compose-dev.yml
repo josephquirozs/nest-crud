@@ -1,0 +1,43 @@
+version: "3.7"
+services:
+  dev-nest-faker-api:
+    container_name: dev-nest-faker-api
+    image: dev-nest-faker-api-image:${VERSION}
+    pull_policy: never
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "49101:3000"
+    environment:
+      - "TZ=UTC"
+    volumes:
+      - .:/root/repo/
+      - /root/repo/db/files/
+    depends_on:
+      - dev-nest-faker-db
+  
+  dev-nest-faker-db:
+    container_name: dev-nest-faker-db
+    image: postgres:14.7-alpine
+    ports:
+      - "49102:5432"
+    environment:
+      - "TZ=UTC"
+      - "PGTZ=UTC"
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=dev123
+    volumes:
+      - ./db/files/dev/data/:/var/lib/postgresql/data/
+      - ./db/scripts/init-dev-db.sql:/docker-entrypoint-initdb.d/init-dev-db.sql:ro
+  
+  dev-nest-faker-pgadmin:
+    container_name: dev-nest-faker-pgadmin
+    image: dpage/pgadmin4:7.1
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "postgres@dev.lo"
+      PGADMIN_DEFAULT_PASSWORD: "dev123"
+    ports:
+      - "49103:80"
+    depends_on:
+      - dev-nest-faker-db
