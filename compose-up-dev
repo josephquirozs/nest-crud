@@ -1,0 +1,3 @@
+#!/bin/bash
+mkdir -p db/files/dev/data/
+docker compose -f docker-compose-dev.yml -p dev-nest-faker-service up -d
